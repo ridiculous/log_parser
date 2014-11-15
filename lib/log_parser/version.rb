@@ -1,3 +1,3 @@
-class LogParser
-  VERSION = '0.0.1'.freeze
+module LogParser
+  VERSION = '0.1.2'.freeze
 end

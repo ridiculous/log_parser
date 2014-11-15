@@ -1,0 +1,8 @@
+[2014-11-13T23:12:10-07:00] INFO: [page_id 24323] Updating page and reviews
+[2014-11-13T23:12:12-07:00] INFO: [page_id 24323] Reviews found
+¯\_(ツ)_/¯ I don't know h0w I got here
+[2014-11-13T23:12:14-07:00] INFO: [page_id 24323] Saved 10 reviews
+[2014-11-13T23:12:15-07:00] WARNING: [page_id 75645] Failed to find page (maybe it doesn't exists?)
+[2014-11-13T23:12:16-15:00] INFO: [page_id 95239] Updating page and reviews
+[2014-11-13T23:12:17-07:00] INFO: [page_id 95239] Reviews found
+[2014-11-13T23:12:18-07:00] ERROR: [page_id 95239] Failed to save reviews! Validation failed: Text can't be blank

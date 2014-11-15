@@ -1,0 +1,159 @@
+module LogParser
+  class Client
+    #
+    # = Class
+    #
+    # Filter lines from the log file by chaining methods together:
+    #
+    #   log = LogParser::Client.new('open_table.log')
+    #   log.errors.by_message('authentication failed').since(1.day.ago)
+    #   #=> ["[2014-11-13T23:12:14-07:00] ERROR [page_id 95239] Authentication failed with token ..."]
+    #
+
+    LINE_PATTERN = %r{
+                    \[(\d+-\d+-\d+T\d+:\d+:\d+-\d+:\d+)\] # timestamp
+                    (\s(\w+):)?                           # type of message (ERROR, WARNING, INFO)
+                    (\s\[(.+)\])?                         # prefix (introduced by log.rb)
+                    \s(.+)$                               # message body
+                  }x
+
+    attr_reader :file
+    attr_writer :lines
+
+    #
+    # @param [String|Pathname] log name of the file in 'log' directory or a Pathname object
+    # @param [Hash] options optional parameters
+    # @option :line_items is an array of LineItem objects
+    # @option :pattern a custom pattern to use for matching lines
+    #
+    def initialize(log = '', options = {})
+      @file = log.is_a?(String) ? LogParser.path_for(log) : log
+      @lines = options.fetch :line_items, nil
+      @pattern = options.fetch :pattern, LINE_PATTERN
+    end
+
+    #
+    # Chainable
+    #
+
+    def errors
+      by_type('ERROR')
+    end
+
+    def warnings
+      by_type('WARNING')
+    end
+
+    def infos
+      by_type('INFO')
+    end
+
+    def since(timestamp)
+      chain do |items|
+        for line in lines
+          items << line if DateTime.parse(line.timestamp) > timestamp
+        end
+      end
+    end
+
+    def by_message(text)
+      chain do |items|
+        for line in lines
+          items << line if line.message =~ Regexp.new(text, Regexp::IGNORECASE)
+        end
+      end
+    end
+
+    def by_prefix(name)
+      chain do |items|
+        for line in lines
+          items << line if line.prefix == name
+        end
+      end
+    end
+
+    def by_type(name)
+      chain do |items|
+        for line in lines
+          items << line if line.type == name
+        end
+      end
+    end
+
+    #
+    # Non-chainable Helpers
+    #
+
+    def prefixes
+      items = Set.new
+      lines.each { |line| items << line.prefix }
+      items.to_a.compact
+    end
+
+    def uniq
+      lines.uniq(&:full_message)
+    end
+
+    def timestamps
+      lines.map(&:timestamp)
+    end
+
+    def messages
+      lines.map(&:message)
+    end
+
+    def strings
+      lines.map(&:to_s)
+    end
+
+    def count
+      lines.count
+    end
+
+    alias length count
+
+    def sort
+      lines.sort
+    end
+
+    #
+    # Default overrides
+    #
+
+    def to_s
+      Array(@lines).map(&:to_s).to_s
+    end
+
+    alias inspect to_s
+
+    #
+    # Private
+    #
+
+    def scan
+      line_items = []
+      File.open(file) do |f|
+        line = nil
+        begin
+          line = f.gets
+          line_items << LineItem.new($1, $3, $5, $6) if line =~ @pattern
+        end while line
+      end
+      line_items
+    end
+
+    def chain
+      items = []
+      yield items
+      self.class.new(file, line_items: items)
+    end
+
+    def lines
+      @lines = scan if @lines.nil?
+      @lines
+    end
+
+    alias to_a lines
+  end
+
+end
