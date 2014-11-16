@@ -66,4 +66,11 @@ class LogParser::ClientTest < MiniTest::Unit::TestCase
     assert_equal 3, prefixes.count
     assert_equal ['page_id 24323', 'page_id 75645', 'page_id 95239'], prefixes
   end
+
+  def test_chaining_methods
+    date = DateTime.parse('2014-11-13T23:12:12-07:00')
+    lines = @log.by_prefix('page_id 24323').by_message(/saved \d+ reviews/i).since(date).uniq
+    assert_equal 1, lines.count
+    assert_equal '[page_id 24323] Saved 10 reviews', lines.first.full_message
+  end
 end

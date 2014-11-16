@@ -5,7 +5,7 @@ module LogParser
     #
     # Filter lines from the log file by chaining methods together:
     #
-    #   log = LogParser::Client.new('open_table.log')
+    #   log = LogParser::Client.new('some.log')
     #   log.errors.by_message('authentication failed').since(1.day.ago)
     #   #=> ["[2014-11-13T23:12:14-07:00] ERROR [page_id 95239] Authentication failed with token ..."]
     #
@@ -56,10 +56,11 @@ module LogParser
       end
     end
 
-    def by_message(text)
+    def by_message(pattern_or_text)
+      pattern = pattern_or_text.is_a?(Regexp) ? pattern_or_text : Regexp.new(pattern_or_text, Regexp::IGNORECASE)
       chain do |items|
         for line in lines
-          items << line if line.message =~ Regexp.new(text, Regexp::IGNORECASE)
+          items << line if line.message =~ pattern
         end
       end
     end
