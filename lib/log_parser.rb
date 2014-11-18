@@ -1,4 +1,5 @@
 require 'date'
+require 'pathname'
 
 require 'log_parser/version'
 require 'log_parser/line_item'

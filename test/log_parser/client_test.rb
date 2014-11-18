@@ -1,4 +1,3 @@
-require 'pathname'
 require 'minitest/autorun'
 require 'log_parser'
 
