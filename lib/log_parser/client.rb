@@ -28,8 +28,8 @@ module LogParser
     #
     def initialize(log = '', options = {})
       @file = log.is_a?(String) ? LogParser.path_for(log) : log
-      @lines = options.fetch :line_items, nil
-      @pattern = options.fetch :pattern, LINE_PATTERN
+      @lines = options[:line_items]
+      @pattern = options.fetch(:pattern, LINE_PATTERN)
     end
 
     #
@@ -150,8 +150,7 @@ module LogParser
     end
 
     def lines
-      @lines = scan if @lines.nil?
-      @lines
+      @lines ||= scan
     end
 
     alias to_a lines
