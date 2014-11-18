@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-The class overs a some methods for scanning through a log `by_message(msg)`, `erors`, `warnings`, `since(datetime)` and `uniq`.
+The class offers a some methods for scanning through a log `by_message(msg)`, `erors`, `warnings`, `since(datetime)` and `uniq`.
 These methods can be chained together to refine your search. For example:
 
 ```Ruby
