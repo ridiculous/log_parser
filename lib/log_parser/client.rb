@@ -10,26 +10,19 @@ module LogParser
     #   #=> ["[2014-11-13T23:12:14-07:00] ERROR [page_id 95239] Authentication failed with token ..."]
     #
 
-    LINE_PATTERN = %r{
-                    \[(\d+-\d+-\d+T\d+:\d+:\d+-\d+:\d+)\] # timestamp
-                    (\s(\w+):)?                           # type of message (ERROR, WARNING, INFO)
-                    (\s\[(.+)\])?                         # prefix (introduced by log.rb)
-                    \s(.+)$                               # message body
-                  }x
-
-    attr_reader :file
+    attr_accessor :file, :line_pattern
     attr_writer :lines
 
     #
     # @param [String|Pathname] log name of the file in 'log' directory or a Pathname object
     # @param [Hash] options optional parameters
     # @option :line_items is an array of LineItem objects
-    # @option :pattern a custom pattern to use for matching lines
+    # @option :line_pattern a custom pattern to use for matching lines
     #
     def initialize(log = '', options = {})
       @file = log.is_a?(String) ? LogParser.path_for(log) : log
       @lines = options[:line_items]
-      @pattern = options.fetch(:pattern, LINE_PATTERN)
+      @line_pattern = options.fetch(:line_pattern, LogParser.line_pattern)
     end
 
     #
@@ -137,7 +130,7 @@ module LogParser
         line = nil
         begin
           line = f.gets
-          line_items << LineItem.new($1, $3, $5, $6) if line =~ @pattern
+          line_items << LineItem.new($1, $3, $5, $6) if line =~ line_pattern
         end while line
       end
       line_items
