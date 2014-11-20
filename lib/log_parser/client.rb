@@ -139,7 +139,7 @@ module LogParser
     def chain
       items = []
       yield items
-      self.class.new(file, line_items: items)
+      self.class.new(file, line_items: items, line_pattern: line_pattern)
     end
 
     def lines

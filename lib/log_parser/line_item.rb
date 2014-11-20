@@ -8,6 +8,8 @@ module LogParser
       s
     end
 
+    alias inspect to_s
+
     def full_message
       prefix ? "[#{prefix}] #{message}" : message
     end
