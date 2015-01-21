@@ -13,15 +13,11 @@ module LogParser
     attr_accessor :file, :line_pattern
     attr_writer :lines
 
-    #
-    # @param [String|Pathname] log name of the file in 'log' directory or a Pathname object
+    # @param [String, Pathname] log name of the file in 'log' directory or a Pathname object
     # @param [Hash] options optional parameters
-    # @option :line_items is an array of LineItem objects
-    # @option :line_pattern a custom pattern to use for matching lines
-    #
+    # @option options [Regex] :line_pattern a custom pattern to use for matching lines
     def initialize(log = '', options = {})
       @file = log.is_a?(String) ? LogParser.path_for(log) : log
-      @lines = options[:line_items]
       @line_pattern = options.fetch(:line_pattern, LogParser.line_pattern)
     end
 
