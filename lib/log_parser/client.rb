@@ -42,7 +42,7 @@ module LogParser
     end
 
     def since(timestamp)
-      chain do |items|
+      [].tap do |items|
         for line in lines
           items << line if DateTime.parse(line.timestamp) > timestamp
         end
@@ -51,7 +51,7 @@ module LogParser
 
     def by_message(pattern_or_text)
       pattern = pattern_or_text.is_a?(Regexp) ? pattern_or_text : Regexp.new(pattern_or_text, Regexp::IGNORECASE)
-      chain do |items|
+      [].tap do |items|
         for line in lines
           items << line if line.message =~ pattern
         end
@@ -59,7 +59,7 @@ module LogParser
     end
 
     def by_prefix(name)
-      chain do |items|
+      [].tap do |items|
         for line in lines
           items << line if line.prefix == name
         end
@@ -67,7 +67,7 @@ module LogParser
     end
 
     def by_type(name)
-      chain do |items|
+      [].tap do |items|
         for line in lines
           items << line if line.type == name
         end
@@ -134,12 +134,6 @@ module LogParser
         end while line
       end
       line_items
-    end
-
-    def chain
-      items = []
-      yield items
-      self.class.new(file, line_items: items, line_pattern: line_pattern)
     end
 
     def lines
