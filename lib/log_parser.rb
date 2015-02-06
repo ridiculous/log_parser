@@ -17,10 +17,10 @@ module LogParser
                       }x
 
   LOGGER_PATTERN = %r{
-                      \w,\s\[(\d+-\d+-\d+T\d+:\d+:\d+\.\d+)\s#\d+\] # timestamp
-                      (\s+(\w+)\s--)?                               # type of message (ERROR, WARNING, INFO)
-                      (\s(.+):\s)?                                  # prefix (shared context for multiple lines)
-                      (.+)$                                         # message body
+                      \w,\s\[(\d+-\d+-\d+T\d+:\d+:\d+\.\d+)\s\#\d+\] # timestamp
+                      (\s+(\w+)\s--)?                                # type of message (ERROR, WARNING, INFO)
+                      (\s(.+):\s+)                                   # prefix (shared context for multiple lines)
+                      (.+)$                                          # message body
                     }x
 
   def path_for(file)
