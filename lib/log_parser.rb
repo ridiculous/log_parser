@@ -9,12 +9,19 @@ require 'log_parser/client'
 module LogParser
   extend self
 
-  LINE_PATTERN = %r{
-                    \[(\d+-\d+-\d+T\d+:\d+:\d+-\d+:\d+)\] # timestamp
-                    (\s(\w+):)?                           # type of message (ERROR, WARNING, INFO)
-                    (\s\[(.+)\])?                         # prefix (introduced by log.rb)
-                    \s(.+)$                               # message body
-                  }x
+  UNICORN_PATTERN = %r{
+                        \[(\d+-\d+-\d+T\d+:\d+:\d+-\d+:\d+)\] # timestamp
+                        (\s(\w+):)?                           # type of message (ERROR, WARNING, INFO)
+                        (\s\[(.+)\])?                         # prefix (introduced by log.rb)
+                        \s(.+)$                               # message body
+                      }x
+
+  LOGGER_PATTERN = %r{
+                      \w,\s\[(\d+-\d+-\d+T\d+:\d+:\d+\.\d+)\s#\d+\] # timestamp
+                      (\s+(\w+)\s--)?                               # type of message (ERROR, WARNING, INFO)
+                      (\s(.+):\s)?                                  # prefix (shared context for multiple lines)
+                      (.+)$                                         # message body
+                    }x
 
   def path_for(file)
     Pathname.new(File.join(Dir.pwd, 'log', file))
@@ -33,6 +40,6 @@ module LogParser
   end
 
   def line_pattern
-    config.line_pattern || LINE_PATTERN
+    config.line_pattern || UNICORN_PATTERN
   end
 end
