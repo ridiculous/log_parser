@@ -4,8 +4,9 @@ require 'log_parser'
 class LogParser::ClientTest < MiniTest::Unit::TestCase
 
   def setup
-    @file = Pathname.new(File.join(Dir.pwd, 'test', 'fixtures', 'example.log'))
+    @file = Pathname.new(File.expand_path(File.join('..', '..', 'fixtures', 'example.log'), __FILE__))
     @log = LogParser::Client.new(@file)
+    @date = DateTime.parse('2014-11-13T23:12:12-07:00')
   end
 
   def test_initialize_with_string
@@ -66,10 +67,25 @@ class LogParser::ClientTest < MiniTest::Unit::TestCase
     assert_equal ['page_id 24323', 'page_id 75645', 'page_id 95239'], prefixes
   end
 
-  def test_chaining_methods
-    date = DateTime.parse('2014-11-13T23:12:12-07:00')
-    lines = @log.by_prefix('page_id 24323').by_message(/saved \d+ reviews/i).since(date).uniq
+  #
+  # Chaining
+  #
+
+  def test_prefix_is_chainable
+    prefix_lines = @log.by_prefix('foobar')
+    assert_respond_to prefix_lines, :by_message
+    assert_respond_to prefix_lines, :by_type
+    assert_respond_to prefix_lines, :since
+  end
+
+  def test_filtering_by_chaining
+    lines = @log.by_prefix('page_id 24323').by_message(/saved \d+ reviews/i).since(@date).uniq
     assert_equal 1, lines.count
     assert_equal '[page_id 24323] Saved 10 reviews', lines.first.full_message
+  end
+
+  def test_no_chain_mutation
+    @log.by_prefix('page_id 24323').by_message(/saved \d+ reviews/i).since(@date).uniq
+    assert_equal 7, @log.lines.count
   end
 end
