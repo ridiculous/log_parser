@@ -22,7 +22,7 @@ The class offers a some methods for scanning through a log `by_message(msg)`, `e
 These methods can be chained together to refine your search. For example:
 
 ```Ruby
-log = LogParser::Client.new('some.log')
+log = LogParser::Client.new('some.log', line_pattern: LogParser::LOGGER_PATTERN)
 log.errors.by_message('authentication failed').since(1.day.ago)
 #=> ["[2014-11-13T23:12:14-07:00] ERROR [page_id 95239] Authentication failed with token ..."]
 ```
