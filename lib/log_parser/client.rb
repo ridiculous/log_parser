@@ -130,7 +130,7 @@ module LogParser
         line = nil
         begin
           line = f.gets
-          line_items << LineItem.new($1, $3, $5, $6) if line =~ line_pattern
+          line_items << LineItem.new($1, $3, $5, $6) if line =~ @line_pattern
         end while line
       end
       line_items
