@@ -1,5 +1,11 @@
 module LogParser
-  class LineItem < Struct.new(:timestamp, :type, :prefix, :message)
+  class LineItem < BasicObject
+    attr_reader :timestamp, :type, :prefix, :message
+
+    def initialize(timestamp, type, prefix, message)
+      @timestamp, @type, @prefix, @message = timestamp, type, prefix, message
+    end
+
     def to_s
       s = "[#{timestamp}] "
       s << "#{type}: " if type
