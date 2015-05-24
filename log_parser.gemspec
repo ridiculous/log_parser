@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["arebuckley@gmail.com"]
   spec.summary       = %q{Easily search log files}
   spec.description   = %q{Scan through logs with some filter methods}
-  spec.homepage      = 'https://github.com/ridiculous'
+  spec.homepage      = 'https://github.com/ridiculous/log_parser'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
