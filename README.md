@@ -1,6 +1,6 @@
 # LogParser
 
-A simple class for searching through a log. By default, LogParser knows how to read Unicorn production logs and the default logging pattern for Ruby's Logger library. A custom pattern can be passed, or the defaults can be found in [log_parser.rb](https://github.com/ridiculous/log_parser/blob/master/lib/log_parser.rb#L12)
+A simple class for searching through a log. By default, LogParser knows how to read Unicorn production logs (default) and the default format of Ruby's Logger library. The gem's defaults can be found in [log_parser.rb](https://github.com/ridiculous/log_parser/blob/master/lib/log_parser.rb#L43). You can override the default on initialization by passing a regex as the `:line_pattern` option.
 
 ## Installation
 
