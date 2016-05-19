@@ -38,36 +38,36 @@ module LogParser
     end
 
     def since(timestamp)
-      [].tap do |items|
-        for line in lines
-          items << line if DateTime.parse(line.timestamp) > timestamp
-        end
+      items = []
+      for line in lines
+        items << line if DateTime.parse(line.timestamp) > timestamp
       end
+      items
     end
 
     def by_message(pattern_or_text)
       pattern = pattern_or_text.is_a?(Regexp) ? pattern_or_text : Regexp.new(pattern_or_text, Regexp::IGNORECASE)
-      [].tap do |items|
-        for line in lines
-          items << line if line.message =~ pattern
-        end
+      items = []
+      for line in lines
+        items << line if line.message =~ pattern
       end
+      items
     end
 
     def by_prefix(name)
-      [].tap do |items|
-        for line in lines
-          items << line if line.prefix == name
-        end
+      items = []
+      for line in lines
+        items << line if line.prefix == name
       end
+      items
     end
 
     def by_type(name)
-      [].tap do |items|
-        for line in lines
-          items << line if line.type == name
-        end
+      items = []
+      for line in lines
+        items << line if line.type == name
       end
+      items
     end
 
     #
