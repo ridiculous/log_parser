@@ -42,36 +42,24 @@ module LogParser
     end
 
     def since(timestamp)
-      chain do |items|
-        for line in lines
-          items << line if DateTime.parse(line.timestamp) > timestamp
-        end
-      end
+      items = lines.select { |line| DateTime.parse(line.timestamp) > timestamp }
+      copy_self(items)
     end
 
     def by_message(pattern_or_text)
       pattern = pattern_or_text.is_a?(Regexp) ? pattern_or_text : Regexp.new(pattern_or_text, Regexp::IGNORECASE)
-      chain do |items|
-        for line in lines
-          items << line if line.message =~ pattern
-        end
-      end
+      items = lines.select { |line| line.message =~ pattern }
+      copy_self(items)
     end
 
     def by_prefix(name)
-      chain do |items|
-        for line in lines
-          items << line if line.prefix == name
-        end
-      end
+      items = lines.select { |line| line.prefix == name }
+      copy_self(items)
     end
 
     def by_type(name)
-      chain do |items|
-        for line in lines
-          items << line if line.type == name
-        end
-      end
+      items = lines.select { |line| line.type == name }
+      copy_self(items)
     end
 
     #
@@ -124,6 +112,12 @@ module LogParser
     # Private
     #
 
+    def copy_self(items)
+      copy = clone
+      copy.lines = items
+      copy
+    end
+
     def scan
       line_items = []
       File.open(file) do |f|
@@ -134,12 +128,6 @@ module LogParser
         end while line
       end
       line_items
-    end
-
-    def chain
-      items = []
-      yield items
-      self.class.new(file, line_items: items, line_pattern: line_pattern)
     end
 
     def lines
