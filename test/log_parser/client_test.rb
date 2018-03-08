@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'log_parser'
+require 'byebug'
 
 class LogParser::ClientTest < MiniTest::Unit::TestCase
 
